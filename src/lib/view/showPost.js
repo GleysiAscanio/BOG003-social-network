@@ -16,7 +16,10 @@ export const showPost = (divTimeLine) => {
       if (user.uid === doc.data().uid) {
         cards.innerHTML += `
         <div class="card_publication">
-          <h5>${doc.data().displayName}<i class="fas fa-edit edit" data-id="${idPost.id}"></i><i class="fas fa-trash trash" data-id="${idPost.id}"></i></h5>
+          <h5>${doc.data().displayName}
+            <i class="fas fa-edit edit" data-id="${idPost.id}"></i>
+            <i class="fas fa-trash trash" data-id="${idPost.id}"></i>
+          </h5>
           <p>${doc.data().description}</p>
           <p>${doc.data().fecha.toDate().toDateString()}</p>
         </div>
@@ -26,10 +29,15 @@ export const showPost = (divTimeLine) => {
         <div class="card_publication">
           <h5>${doc.data().displayName}</h5>
           <p>${doc.data().description}</p>
-          <p>${doc.data().fecha.toDate().toDateString()}<i class="fas fa-heart heart" data-id="${idPost.id}"></i></p>
+          <p>${doc.data().fecha.toDate().toDateString()}
+            <i class="fas fa-heart heart" data-id="${idPost.id}"></i>
+            <br>
+            <b class="counter"></b>
+          </p>
         </div>`;
       }
     });
+
     // Evento sobre cada icono de Trash que llama a la ventana modal
     const trashes = divTimeLine.querySelectorAll('.trash');
     trashes.forEach((trash) => {
@@ -50,19 +58,21 @@ export const showPost = (divTimeLine) => {
     });
 
     const hearts = divTimeLine.querySelectorAll('.heart');
-    hearts.forEach((heart) => {
-      heart.addEventListener('click', (e) => {
+
+    hearts.forEach((item) => {
+      item.addEventListener('click', (e) => {
         const id = e.target.dataset.id;
         const user = firebase.auth().currentUser.uid;
         db.collection('posts').doc(id).get().then((doc) => {
           const likesArray = doc.data().likes;
+          const prueba = item;
 
           if (likesArray.includes(user)) {
             removeLike(id, user);
-            heart.style.color = 'darkgrey';
+            prueba.style.color = 'darkgrey';
           } else {
             createLike(id, user);
-            heart.style.color = 'red';
+            prueba.style.color = 'red';
           }
         })
           .catch((error) => {
