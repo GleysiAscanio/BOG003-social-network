@@ -25,6 +25,8 @@ export const createPost = (uid, email, description, displayName) => {
     description,
     displayName,
     fecha: firebase.firestore.FieldValue.serverTimestamp(),
+    likes: [],
+    count: [],
   });
 };
 

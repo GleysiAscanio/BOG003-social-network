@@ -10,8 +10,10 @@ export const showPost = (divTimeLine) => {
     querySnapshot.forEach((doc) => {
       const user = firebase.auth().currentUser;
       const idPost = doc.data();
+      const likesArray = doc.data().likes.length;
       idPost.id = doc.id;
       idPost.uid = doc.uid;
+      idPost.count = doc.count;
 
       if (user.uid === doc.data().uid) {
         cards.innerHTML += `
@@ -32,7 +34,7 @@ export const showPost = (divTimeLine) => {
           <p>${doc.data().fecha.toDate().toDateString()}
             <i class="fas fa-heart heart" data-id="${idPost.id}"></i>
             <br>
-            <b class="counter"></b>
+            <b class="counter">${likesArray}</b>
           </p>
         </div>`;
       }
@@ -59,20 +61,20 @@ export const showPost = (divTimeLine) => {
 
     const hearts = divTimeLine.querySelectorAll('.heart');
 
-    hearts.forEach((item) => {
-      item.addEventListener('click', (e) => {
+    hearts.forEach((heart) => {
+      heart.addEventListener('click', (e) => {
         const id = e.target.dataset.id;
         const user = firebase.auth().currentUser.uid;
         db.collection('posts').doc(id).get().then((doc) => {
           const likesArray = doc.data().likes;
-          const prueba = item;
+          const heartLikes = heart;
 
           if (likesArray.includes(user)) {
+            heartLikes.style.color = 'darkgrey';
             removeLike(id, user);
-            prueba.style.color = 'darkgrey';
           } else {
             createLike(id, user);
-            prueba.style.color = 'red';
+            heartLikes.style.color = 'red';
           }
         })
           .catch((error) => {
